@@ -1,0 +1,30 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+url = 'https://raw.githubusercontent.com/FozzyM/ITL12-1_skl-model/master/ITL12-1.csv'
+data = pd.read_csv(url, decimal=',', sep=';', header=None, engine='c')
+
+X = data.drop([0],axis=1)
+y = data[0]
+
+from sklearn.cross_validation import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.8, random_state = 11)
+
+N_train, _ = X_train.shape 
+N_test,  _ = X_test.shape 
+print (N_train, N_test)
+
+from sklearn import preprocessing
+from sklearn import utils
+
+lab_enc = preprocessing.LabelEncoder()
+y_train = lab_enc.fit_transform(y_train)
+
+from sklearn.svm import SVC
+svc = SVC()
+svc.fit(X_train, y_train)
+
+err_train = np.mean(y_train != svc.predict(X_train))
+err_test  = np.mean(y_test  != svc.predict(X_test))
+print (err_train, err_test)
