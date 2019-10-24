@@ -24,13 +24,26 @@ for i in range(0, 15, 1):
                 fit_out = fit_out[0]
                 DATA.append([i,k,fit_out])
                 it=it+1
-DATAFRAME = pd.DataFrame(DATA, columns = ['Anode voltage (kV)' , 'Grid voltage (V)', 'Anode current (I)'])   
+DATAFRAME = pd.DataFrame(DATA, columns = ['Anode current (A)' , 'Grid voltage (V)', 'Anode voltage (kV)'])   
+DATAFRAME = DATAFRAME.astype('float')
+DATAFRAME.dtypes
 
-import plotly.graph_objects as go
+conv_arr= DATAFRAME.values
 
-fig = go.Figure(data=[go.Surface(x=DATAFRAME['Anode voltage (kV)'], y=DATAFRAME['Grid voltage (V)'], z=DATAFRAME['Anode current (I)'])])
+X = np.delete(conv_arr,[1,2],axis=1) 
+Y = np.delete(conv_arr,[0,2],axis=1) 
+Z = np.delete(conv_arr,[0,1],axis=1) 
 
-fig.update_layout(title='LOLOLO', autosize=True,
-                  width=500, height=500)
+X = X.flatten() 
+Y = Y.flatten()
+Z = Z.flatten()
 
-fig.show()
+plt.rcParams['figure.dpi']=120
+plt.style.use('default')
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+
+ax.plot_trisurf(X, Y, Z, linewidth=0.2, antialiased=True, cmap=plt.cm.CMRmap)
+
+plt.show()
